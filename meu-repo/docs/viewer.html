@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Visualizador de PDF — Vieiracred</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ajustes específicos para o viewer */
+    .viewer-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0}
+    .viewer-actions{display:flex;gap:8px;align-items:center}
+    .viewer-frame{width:100%;height:calc(100vh - 160px);border:0;background:#fff}
+    .btn-back{background:transparent;border:1px solid #ccc;padding:8px 10px;border-radius:6px;text-decoration:none;color:#333}
+    .btn-download{background:var(--accent);color:#fff;padding:8px 10px;border-radius:6px;text-decoration:none;border:0}
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-grid">
+      <div class="brand">
+        <img src="vieiracred.png" alt="Vieiracred" class="logo" />
+        <div class="brand-text">
+          <h1>Visualizador de PDF</h1>
+          <p class="lead" id="doc-title">Carregando…</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="viewer-header" id="viewer-header">
+      <div class="viewer-actions">
+        <a href="index.html" class="btn-back" id="btn-back">← Voltar</a>
+        <a id="btn-download" class="btn-download" href="#" download>Baixar PDF</a>
+      </div>
+      <div id="viewer-info" class="viewer-info"></div>
+    </div>
+
+    <!-- embed usa <iframe> para melhor compatibilidade; alguns navegadores podem abrir nativamente -->
+    <iframe id="pdf-frame" class="viewer-frame" src=""></iframe>
+    <div id="viewer-error" style="color:#a00;margin-top:12px;display:none"></div>
+  </div>
+
+<script>
+// Pega parâmetro ?file=...
+function getQueryParam(name){
+  const url = new URL(window.location.href);
+  return url.searchParams.get(name);
+}
+
+// sanitiza o nome do arquivo (apenas basename com chars permitidos)
+function sanitizeFilename(fn){
+  if(!fn) return null;
+  // remove qualquer caminho e caracteres estranhos
+  const base = fn.split('/').pop().split('\\').pop();
+  // permite letras, números, ponto, hífen e underscore
+  const safe = base.replace(/[^a-zA-Z0-9._-]/g, '');
+  return safe || null;
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  const fileParam = getQueryParam('file');
+  const fileSafe = sanitizeFilename(fileParam);
+  const frame = document.getElementById('pdf-frame');
+  const titleEl = document.getElementById('doc-title');
+  const btnDownload = document.getElementById('btn-download');
+  const viewerError = document.getElementById('viewer-error');
+
+  if(!fileSafe){
+    titleEl.textContent = 'Arquivo inválido';
+    viewerError.style.display = 'block';
+    viewerError.textContent = 'Nome do arquivo inválido ou não fornecido.';
+    return;
+  }
+
+  const pdfPath = 'pdfs/' + encodeURIComponent(fileSafe);
+
+  // carrega no iframe
+  frame.src = pdfPath;
+
+  // atualiza título e botão de download
+  titleEl.textContent = decodeURIComponent(fileSafe).replace(/[-_]/g,' ');
+  btnDownload.href = pdfPath;
+  btnDownload.download = fileSafe;
+
+  // opcional: tenta checar existência (HEAD)
+  fetch(pdfPath, { method: 'HEAD' }).then(res=>{
+    if(!res.ok){
+      viewerError.style.display = 'block';
+      viewerError.textContent = 'Arquivo não encontrado (404). Verifique se o PDF foi enviado.';
+      frame.style.display = 'none';
+      btnDownload.style.display = 'none';
+    }
+  }).catch(err=>{
+    // ignore network errors (o iframe pode ainda carregar)
+    console.warn('Erro HEAD', err);
+  });
+});
+</script>
+</body>
+</html>

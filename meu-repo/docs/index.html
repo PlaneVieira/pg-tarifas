@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Documentos — Vieiracred</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-grid">
+      <div class="brand">
+        <img src="vieiracred.png" alt="Vieiracred" class="logo" />
+        <div class="brand-text">
+          <h1>Vieiracred — Documentos</h1>
+          <p class="lead">Acesse os PDFs oficiais</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="list">
+      <h2>Documentos disponíveis</h2>
+      <ul id="pdf-list">
+        <li class="loading">Carregando documentos…</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>© 2025 Vieiracred</p>
+    </div>
+  </footer>
+
+<script>
+// === Lista embutida de PDFs ===
+const pdfs = [
+  { title: "Tarifas Facta Financeira", file: "tarifa-facta.pdf", date: "08/10/2025", size: "33KB" },
+  { title: "Tarifas Banco Digio", file: "tarifa-digio.pdf", date: "08/10/2025", size: "601KB" },
+  { title: "Tarifas C6 Bank", file: "tarifa-c6.pdf", date: "08/10/2025", size: "112KB"},
+  { title: "Tarifas BRB", file: "tarifa-brb.pdf", date: "08/10/2025", size: "4072KB"},
+  { title: "Tarifas BMG", file: "tarifas-bmg.pdf", date: "08/10/2025", size: "292KB"}
+];
+
+// renderiza a lista
+function renderPdfs(list){
+  const ul = document.getElementById('pdf-list');
+  if(!Array.isArray(list) || list.length === 0){
+    ul.innerHTML = '<li>Nenhum documento cadastrado.</li>';
+    return;
+  }
+  ul.innerHTML = '';
+  list.forEach(item => {
+    const li = document.createElement('li');
+    li.className = 'doc-item';
+
+    // título (abre o arquivo diretamente em nova aba)
+    const titleLink = document.createElement('a');
+    titleLink.href = 'pdfs/' + encodeURIComponent(item.file);
+    titleLink.target = '_blank';
+    titleLink.rel = 'noopener noreferrer';
+    titleLink.className = 'doc-title';
+    titleLink.textContent = item.title || item.file;
+    li.appendChild(titleLink);
+
+    // meta (tamanho e data)
+    const meta = document.createElement('div');
+    meta.className = 'doc-meta';
+    if (item.date || item.size) {
+      meta.textContent = (item.size ? ('Tamanho: ' + item.size + ' · ') : '') + (item.date ? ('Atualizado: ' + item.date) : '');
+    }
+    li.appendChild(meta);
+
+    // botão PDF (leva para viewer.html?file=...)
+    const btn = document.createElement('a');
+    btn.className = 'btn-pdf';
+    // Viewer page expects only the filename, we'll encode it
+    btn.href = 'viewer.html?file=' + encodeURIComponent(item.file);
+    btn.title = 'Abrir em visualizador';
+    btn.innerHTML = `
+      <svg class="icon-pdf" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+        <path fill="currentColor" d="M6 2h7l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zM13 3.5V8h4.5L13 3.5zM8 12h2v5H8v-5zm4 0h2v5h-2v-5z"/>
+      </svg>
+      <span class="btn-text">PDF</span>
+    `;
+    li.appendChild(btn);
+
+    ul.appendChild(li);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    renderPdfs(pdfs);
+  } catch (e) {
+    console.error(e);
+    document.getElementById('pdf-list').innerHTML = '<li class="error">Erro ao carregar documentos.</li>';
+  }
+});
+</script>
+</body>
+</html>

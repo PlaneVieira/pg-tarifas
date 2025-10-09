@@ -1,0 +1,134 @@
+/* styles.css - logo maior e ajustes responsivos */
+:root{
+  --bg:#f6f8fb;
+  --card:#fff;
+  --accent:#066eea;
+  --dark:#303030;
+  --muted:#6b6b6b;
+  --text:#222;
+  --touch-size:44px;
+}
+*{box-sizing:border-box}
+body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;margin:0;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased}
+.wrap{max-width:980px;margin:0 auto;padding:28px}
+.site-header{
+  padding:18px 0 22px;
+  margin-bottom:18px;
+  background:linear-gradient(90deg,rgba(6,110,234,0.06),rgba(48,48,48,0.02));
+}
+
+/* Aumentei a logo aqui para 80px no desktop */
+.brand{
+  display:flex;
+  align-items:center;
+  gap:18px;
+}
+.logo{
+  height:80px;           /* <-- novo tamanho maior (desktop) */
+  display:block;
+  width:auto;
+  object-fit:contain;
+  flex-shrink:0;
+  /* adiciona pequeno shadow suave pra destacar em fundos claros */
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.06));
+}
+.brand-text h1{margin:0;font-size:22px;color:var(--dark)}
+.lead{margin:6px 0 0;color:var(--muted);font-size:14px}
+
+/* Lista */
+.list h2{margin-top:0}
+ul{list-style:none;padding:0;margin:0}
+li{
+  background:var(--card);
+  padding:14px;
+  border-radius:8px;
+  margin-bottom:12px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  box-shadow:0 1px 2px rgba(0,0,0,0.04);
+  min-height: var(--touch-size);
+}
+.doc-title{flex:1;color:var(--dark);text-decoration:none;font-weight:700}
+.doc-meta{color:var(--muted);font-size:13px;margin-left:12px;white-space:nowrap}
+.btn-pdf{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  border:1px solid var(--accent);
+  padding:8px 12px;
+  border-radius:8px;
+  text-decoration:none;
+  color:var(--accent);
+  background:transparent;
+  font-weight:700;
+  min-height: var(--touch-size);
+}
+.btn-pdf:hover{background:var(--accent);color:#fff}
+.icon-pdf{width:16px;height:16px;color:inherit;flex-shrink:0}
+
+/* viewer page buttons (download / back) */
+.btn-download{background:var(--accent);color:#fff;padding:8px 10px;border-radius:6px;text-decoration:none;border:0;display:inline-block}
+.btn-back{background:transparent;border:1px solid #ccc;padding:8px 10px;border-radius:6px;text-decoration:none;color:#333;display:inline-block}
+
+/* hints and misc */
+.hint{color:var(--muted);font-size:14px;margin-top:6px}
+.loading{color:var(--muted)}
+.site-footer{padding:18px 0;margin-top:32px;text-align:center;color:var(--muted);font-size:14px}
+.error{color:#a00}
+code{background:#eef2ff;padding:2px 6px;border-radius:4px}
+
+/* Viewer: iframe responsivo */
+.viewer-frame{
+  width:100%;
+  height:calc(100vh - 220px);
+  border:0;
+  background:#fff;
+}
+
+/* Mobile rules */
+@media (max-width:900px){
+  /* Em telas intermediárias, reduz um pouco a logo */
+  .logo{height:72px}
+  .brand-text h1{font-size:20px}
+}
+
+@media (max-width:700px){
+  .wrap{padding:16px}
+  /* logo menor no celular para economizar espaço, mas ainda maior que antes */
+  .logo{height:64px}
+  .brand{align-items:center;gap:12px}
+  .brand-text h1{font-size:18px}
+  .lead{font-size:13px}
+
+  li{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:8px;
+    padding:12px;
+    min-height: auto;
+  }
+  .doc-title{order:0;margin-bottom:6px}
+  .doc-meta{order:1;margin-left:0}
+  .btn-pdf{
+    order:2;
+    width:100%;
+    justify-content:center;
+    padding:12px;
+    border-radius:10px;
+    font-size:15px;
+  }
+  .icon-pdf{width:18px;height:18px}
+  .viewer-frame{height:66vh}
+}
+
+/* Mobile extra small - garantir leitura e botões maiores */
+@media (max-width:420px){
+  :root{--touch-size:48px}
+  .logo{height:56px} /* ainda legível em telas muito pequenas */
+  .brand-text h1{font-size:16px}
+  .lead{font-size:13px}
+  .btn-pdf{font-size:15px;padding:14px}
+  .viewer-frame{height:70vh}
+}
